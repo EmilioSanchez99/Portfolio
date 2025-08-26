@@ -41,7 +41,7 @@ import { NgOptimizedImage } from '@angular/common';
           <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/10 to-white/0 blur-[80px] pointer-events-none"></div>
 
           <img
-            ngSrc="/assets/welcome.webp"
+            ngSrc="/assets/home/welcome.webp"
             width="768" height="1152"
             alt="Bienvenido a mi Portfolio — consola de código con mensaje de bienvenida"
             class="relative rounded-3xl border border-white/10 shadow-lg w-full h-auto object-cover aspect-[3/4] md:aspect-[4/5] select-none"
