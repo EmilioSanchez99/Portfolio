@@ -1,18 +1,18 @@
 // navbar.component.ts
 import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { NgIf } from '@angular/common'; // ✅ IMPORTA NgIf
+import { NgIf } from '@angular/common'; 
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, NgIf], // ✅ AÑADE NgIf
+  imports: [RouterLink, RouterLinkActive, NgIf],
   template: `
     <header class="sticky top-0 z-50 border-b border-white/10 backdrop-blur bg-neutral-950/70">
       <nav class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <a routerLink="/" class="font-bold text-lg tracking-tight">/emiliosanchez.dev</a>
 
-        <!-- Botón móvil -->
+        <!-- mobile button -->
         <button
           type="button"                                   
           class="md:hidden inline-flex items-center justify-center rounded-xl border border-white/10 px-3 py-2"
@@ -21,7 +21,7 @@ import { NgIf } from '@angular/common'; // ✅ IMPORTA NgIf
           aria-label="Abrir menú"
         >☰</button>
 
-        <!-- Menú desktop -->
+        <!-- desktop menu-->
         <ul class="hidden md:flex gap-6 text-sm">
           <li><a routerLink="/" routerLinkActive="text-white" class="text-neutral-300 hover:text-white">Inicio</a></li>
           <li><a routerLink="/projects" routerLinkActive="text-white" class="text-neutral-300 hover:text-white">Proyectos</a></li>
@@ -30,7 +30,7 @@ import { NgIf } from '@angular/common'; // ✅ IMPORTA NgIf
         </ul>
       </nav>
 
-      <!-- Menú móvil -->
+      <!-- mobile menu -->
       <div *ngIf="open()" class="md:hidden border-t border-white/10">
         <div class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-3 space-y-2">
           <a routerLink="/"         (click)="open.set(false)" class="block text-neutral-300 hover:text-white">Inicio</a>

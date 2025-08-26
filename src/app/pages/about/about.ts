@@ -42,9 +42,9 @@ import { NgOptimizedImage } from '@angular/common';
       </p>
     </section>
 
-    <!-- Galería horizontal -->
+    <!-- horizontal photo gallery -->
     <section class="relative mt-8">
-      <!-- Controles -->
+      <!-- Controls -->
       <div class="pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-between">
         <button type="button"
                 class="pointer-events-auto hidden sm:flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 ml-2"
@@ -60,7 +60,7 @@ import { NgOptimizedImage } from '@angular/common';
         </button>
       </div>
 
-      <!-- Gradientes laterales -->
+      <!-- Lateral gradients -->
       <div class="pointer-events-none absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-neutral-950 to-transparent"></div>
       <div class="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-neutral-950 to-transparent"></div>
 
@@ -95,7 +95,6 @@ import { NgOptimizedImage } from '@angular/common';
 export class AboutComponent {
   @ViewChild('rail') rail!: ElementRef<HTMLDivElement>;
 
-  // 👉 Sustituye por tus ficheros reales en /assets/about/
   images = [
     { src: '/assets/about/ic_dekra.png', alt: 'Ejército — instrucción', caption: 'Ejército · Instrucción' },
     { src: '/assets/about/ic_dekra.png', alt: 'Ejército — operaciones', caption: 'Ejército · Operaciones' },
@@ -110,7 +109,7 @@ export class AboutComponent {
   scroll(dir: 1 | -1) {
     const el = this.rail?.nativeElement;
     if (!el) return;
-    const step = Math.min(400, el.clientWidth * 0.8); // desplazamiento cómodo
+    const step = Math.min(400, el.clientWidth * 0.8);
     el.scrollBy({ left: dir * step, behavior: 'smooth' });
   }
 }

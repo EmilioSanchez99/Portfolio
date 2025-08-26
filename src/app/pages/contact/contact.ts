@@ -44,7 +44,7 @@ import { NgIf } from '@angular/common';
         </a>
       </div>
 
-      <!-- Formulario -->
+      <!-- form -->
       <div class="rounded-2xl border border-white/10 p-6 max-w-xl">
         <form [formGroup]="form" (ngSubmit)="onSubmit($event)" #formRef>
           <div class="grid gap-4">
@@ -103,7 +103,7 @@ export class ContactComponent {
   private FSP_FORM_ID = 'f/movnqjda';
 
   constructor(private fb: FormBuilder) {
-    // ✅ crear el form aquí (ya existe fb)
+    // crear el form aquí (ya existe fb)
     this.form = this.fb.group({
       from_name:  ['', [Validators.required, Validators.minLength(2)]],
       from_email: ['', [Validators.required, Validators.email]],
