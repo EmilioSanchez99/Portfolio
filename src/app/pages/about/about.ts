@@ -7,6 +7,7 @@ import { NgOptimizedImage } from '@angular/common';
   standalone: true,
   imports: [NgFor, NgOptimizedImage],
   template: `
+  <section class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
     <section class="prose prose-invert max-w-none">
       <h2 class="text-3xl font-bold mb-6">Sobre mí</h2>
 
@@ -82,6 +83,7 @@ import { NgOptimizedImage } from '@angular/common';
           </figcaption>
         </figure>
       </div>
+    </section>
     </section>
   `,
   styles: [`
