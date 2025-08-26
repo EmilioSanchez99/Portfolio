@@ -39,7 +39,7 @@ import { NgIf } from '@angular/common';
           <span class="text-xl">✉️</span>
           <div>
             <div class="font-semibold">Email</div>
-            <div class="text-sm text-neutral-400">tucorreo@dominio.com</div>
+            <div class="text-sm text-neutral-400">emiliosanvar99@gmail.com</div>
           </div>
         </a>
       </div>

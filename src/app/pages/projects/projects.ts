@@ -43,7 +43,7 @@ export class ProjectsComponent {
       tag: 'Angular',
       tech: ['Angular', 'Tailwind', 'SSR'],
       imageUrl: '/assets/projects/ic_angular.png',
-      repoUrl: 'https://github.com/tuusuario/portfolio'
+      repoUrl: 'https://github.com/emiliosanchez99/portfolio'
      
     },
     {

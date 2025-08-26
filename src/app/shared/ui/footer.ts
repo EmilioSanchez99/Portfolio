@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
         <div class="flex gap-4">
           <a href="https://github.com/emiliosanchez99" target="_blank" class="hover:text-white">GitHub</a>
           <a href="https://www.linkedin.com/in/emiliosanchezdev" target="_blank" class="hover:text-white">LinkedIn</a>
-          <a href="/assets/cv.pdf" target="_blank" class="hover:text-white">CV</a>
+          <a href="/assets/navbar/cv.pdf" target="_blank" class="hover:text-white">CV</a>
         </div>
       </div>
     </footer>
