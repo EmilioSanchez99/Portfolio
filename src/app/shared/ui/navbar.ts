@@ -1,4 +1,3 @@
-// src/app/shared/ui/navbar.component.ts
 import {
   Component,
   signal,
@@ -9,9 +8,11 @@ import {
   AfterViewInit,
   OnDestroy,
   HostListener,
+  Inject,
+  PLATFORM_ID,
 } from '@angular/core';
+import { isPlatformBrowser, NgIf, NgFor } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
-import { NgIf, NgFor } from '@angular/common';
 import { filter, Subscription } from 'rxjs';
 
 type NavItem = { label: string; path: string; exact?: boolean };
@@ -50,7 +51,7 @@ type NavItem = { label: string; path: string; exact?: boolean };
               routerLinkActive="text-white bg-white/10"
               #rla="routerLinkActive"
               [routerLinkActiveOptions]="{ exact: !!item.exact }"
-                [attr.aria-current]="rla.isActive ? 'page' : null"
+              [attr.aria-current]="rla.isActive ? 'page' : null"
               class="px-3 py-2 rounded-xl text-neutral-300 hover:text-white hover:bg-white/10 transition"
               (isActiveChange)="onActiveChange(i, $event)"
             >
@@ -60,12 +61,11 @@ type NavItem = { label: string; path: string; exact?: boolean };
 
           <!-- Indicador deslizante -->
           <span
-  class="pointer-events-none absolute -bottom-[4px] hidden md:block h-[3px] rounded-[100px] bg-white/80 transition-all duration-300"
-  [style.transform]="'translateX(' + indicatorLeft + 'px)'"
-  [style.width.px]="indicatorWidth"
-  [style.opacity]="indicatorVisible ? 1 : 0"
-></span>
-
+            class="pointer-events-none absolute -bottom-[4px] hidden md:block h-[3px] rounded-[100px] bg-white/80 transition-all duration-300"
+            [style.transform]="'translateX(' + indicatorLeft + 'px)'"
+            [style.width.px]="indicatorWidth"
+            [style.opacity]="indicatorVisible ? 1 : 0"
+          ></span>
         </ul>
       </nav>
 
@@ -90,10 +90,8 @@ type NavItem = { label: string; path: string; exact?: boolean };
   `
 })
 export class NavbarComponent implements AfterViewInit, OnDestroy {
-  // Estado
   open = signal(false);
 
-  // Items dinámicos
   items: NavItem[] = [
     { label: 'Inicio', path: '/', exact: true },
     { label: 'Proyectos', path: '/projects' },
@@ -101,8 +99,7 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
     { label: 'Contacto', path: '/contact' },
   ];
 
-  // Refs para el indicador
-  @ViewChild('menu', { static: true }) menuRef!: ElementRef<HTMLUListElement>;
+  @ViewChild('menu') menuRef!: ElementRef<HTMLUListElement>;
   @ViewChildren('linkEl') linkEls!: QueryList<ElementRef<HTMLAnchorElement>>;
 
   indicatorLeft = 0;
@@ -110,19 +107,26 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
   indicatorVisible = false;
 
   private sub?: Subscription;
+  private readonly isBrowser: boolean;
 
-  constructor(private router: Router, private host: ElementRef<HTMLElement>) {}
+  constructor(
+    private router: Router,
+    private host: ElementRef<HTMLElement>,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId); 
+  }
 
   ngAfterViewInit(): void {
-    // Ajuste inicial
-    setTimeout(() => this.moveIndicatorToActive(), 0);
+    if (!this.isBrowser) return; 
 
-    // En cada navegación
+    queueMicrotask(() => this.moveIndicatorToActive());
+
     this.sub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(() => {
-        this.open.set(false);            // cerrar mobile al navegar
-        setTimeout(() => this.moveIndicatorToActive(), 0);
+        this.open.set(false);
+        requestAnimationFrame(() => this.moveIndicatorToActive());
       });
   }
 
@@ -130,15 +134,15 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  // Resize -> recolocar indicador
   @HostListener('window:resize')
   onResize() {
+    if (!this.isBrowser) return;
     requestAnimationFrame(() => this.moveIndicatorToActive());
   }
 
-  // Click fuera -> cerrar mobile
   @HostListener('document:click', ['$event'])
   onDocClick(ev: MouseEvent) {
+    if (!this.isBrowser) return;
     if (!this.open()) return;
     const el = this.host.nativeElement as HTMLElement;
     if (!el.contains(ev.target as Node)) this.open.set(false);
@@ -148,11 +152,13 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
     this.open.set(!this.open());
   }
 
-  // Accesibilidad: navegación con flechas en desktop
   onKeydown(ev: KeyboardEvent) {
+    if (!this.isBrowser) return;
     if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
     ev.preventDefault();
-    const links = this.linkEls.toArray().map(r => r.nativeElement);
+    const links = this.linkEls?.toArray().map(r => r.nativeElement) ?? [];
+    if (!links.length) return;
+
     const activeIdx = Math.max(
       0,
       this.items.findIndex(i => this.router.isActive(i.path, i.exact ?? false))
@@ -165,24 +171,33 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
   }
 
   onActiveChange(index: number, active: boolean) {
+    if (!this.isBrowser) return;
     if (active) this.moveIndicatorToIndex(index);
   }
 
   private moveIndicatorToActive() {
+    if (!this.isBrowser) return;
+
     const idx = this.items.findIndex(i => this.router.isActive(i.path, i.exact ?? false));
     if (idx >= 0) this.moveIndicatorToIndex(idx);
     else this.indicatorVisible = false;
   }
 
   private moveIndicatorToIndex(index: number) {
-    const menuRect = this.menuRef.nativeElement.getBoundingClientRect();
-    const link = this.linkEls.get(index)?.nativeElement;
-    if (!link) return;
+    if (!this.isBrowser) return;
 
+    const menuEl = this.menuRef?.nativeElement as unknown;
+    const link = this.linkEls?.get(index)?.nativeElement;
+
+    if (!menuEl || !link) return;
+    const hasGBCR = typeof (menuEl as any).getBoundingClientRect === 'function';
+    if (!hasGBCR) return;
+
+    const menuRect = (menuEl as HTMLElement).getBoundingClientRect();
     const rect = link.getBoundingClientRect();
-    // Ajustes para que la "pill" no sobresalga de los bordes redondeados
+
     this.indicatorLeft = rect.left - menuRect.left + 8;
-    this.indicatorWidth = rect.width - 16;
+    this.indicatorWidth = Math.max(0, rect.width - 16);
     this.indicatorVisible = true;
   }
 }

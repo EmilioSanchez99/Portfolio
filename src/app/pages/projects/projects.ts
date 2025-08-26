@@ -44,7 +44,6 @@ export class ProjectsComponent {
       tech: ['Angular', 'Tailwind', 'SSR'],
       imageUrl: '/assets/projects/ic_angular.png',
       repoUrl: 'https://github.com/emiliosanchez99/portfolio'
-     
     },
     {
       title: 'App Objetivos Financieros',
@@ -52,8 +51,8 @@ export class ProjectsComponent {
       tag: 'Android',
       tech: ['Java', 'Material Design','Firebase','XML'],
       imageUrl: '/assets/projects/ic_finanpie.png',
-      demoUrl: '#',
-      repoUrl: '#'
+      demoUrl: 'https://github.com/EmilioSanchez99/FinanPie/releases/latest/download/app-release.apk',
+      repoUrl: 'https://github.com/EmilioSanchez99/FinanPie'
     },
     {
       title: 'Rediseño completo de App Android',

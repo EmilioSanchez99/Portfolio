@@ -116,14 +116,14 @@ export class AboutComponent {
   @ViewChild('rail') rail!: ElementRef<HTMLDivElement>;
 
   images = [
-    { src: '/assets/about/ic_dekra.png', alt: 'Ejército — instrucción', caption: 'Ejército · Instrucción' },
-    { src: '/assets/about/ic_dekra.png', alt: 'Ejército — operaciones', caption: 'Ejército · Operaciones' },
-    { src: '/assets/about/ic_dekra.png', alt: 'DAM — prácticas y proyectos', caption: 'DAM · Proyectos' },
-    { src: '/assets/about/ic_dekra.png', alt: 'DAM — graduación', caption: 'DAM · Graduación' },
-    { src: '/assets/about/ic_dekra.png', alt: 'Ejército — instrucción', caption: 'Ejército · Instrucción' },
-    { src: '/assets/about/ic_dekra.png', alt: 'Ejército — operaciones', caption: 'Ejército · Operaciones' },
-    { src: '/assets/about/ic_dekra.png', alt: 'DAM — prácticas y proyectos', caption: 'DAM · Proyectos' },
-    { src: '/assets/about/ic_dekra.png', alt: 'DAM — graduación', caption: 'DAM · Graduación' },
+    { src: '/assets/about/ejercito1.jpg', alt: 'Ejército — instrucción', caption: 'Ejército · Instrucción' },
+    { src: '/assets/projects/ic_dekra.png', alt: 'Ejército — operaciones', caption: 'Ejército · Operaciones' },
+    { src: '/assets/projects/ic_dekra.png', alt: 'DAM — prácticas y proyectos', caption: 'DAM · Proyectos' },
+    { src: '/assets/projects/ic_dekra.png', alt: 'DAM — graduación', caption: 'DAM · Graduación' },
+    { src: '/assets/projects/ic_dekra.png', alt: 'Ejército — instrucción', caption: 'Ejército · Instrucción' },
+    { src: '/assets/projects/ic_dekra.png', alt: 'Ejército — operaciones', caption: 'Ejército · Operaciones' },
+    { src: '/assets/projects/ic_dekra.png', alt: 'DAM — prácticas y proyectos', caption: 'DAM · Proyectos' },
+    { src: '/assets/projects/ic_dekra.png', alt: 'DAM — graduación', caption: 'DAM · Graduación' },
   ];
 
   scroll(dir: 1 | -1) {
