@@ -48,7 +48,7 @@ export class ProjectsComponent {
     },
     {
       title: 'App Objetivos Financieros',
-      description: 'Cards con metas, diálogos para ingresar cantidades y progreso.',
+      description: 'Gráficos, Cards con metas, diálogos para ingresar cantidades y progreso.',
       tag: 'Android',
       tech: ['Java', 'Material Design','Firebase','XML'],
       imageUrl: '/assets/projects/ic_finanpie.png',
@@ -57,7 +57,7 @@ export class ProjectsComponent {
     },
     {
       title: 'Rediseño completo de App Android',
-      description: 'Migración de ListView a RecyclerView con CardViews modernos.',
+      description: 'Migración del Frontend de App antigua a un nuevo diseño, mejorando la UI/UX.',
       tag: 'Android UI',
       tech: ['KPIs','RecyclerView', 'CardView', 'Material Design'],
       imageUrl: '/assets/projects/ic_dekra.png'
