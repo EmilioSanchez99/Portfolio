@@ -16,7 +16,7 @@ import { NgOptimizedImage } from '@angular/common';
         </h1>
 
         <p class="mt-4 text-neutral-300 max-w-prose">
-          Graduado en Desarrollo de Aplicaciones Multiplataforma con el mejor expediente académico de mi promoción.
+          Graduado en Desarrollo de Aplicaciones Multiplataforma con el <b>mejor expediente académico de mi promoción.</b>
           Especializado en <b>apps Android</b> y <b>aplicaciones web modernas</b> con Angular, Tailwind y Spring Boot.
           Mi experiencia combina <b>diseño de interfaces</b> y <b>optimización backend</b>, creando soluciones rápidas, accesibles y escalables.
         </p>

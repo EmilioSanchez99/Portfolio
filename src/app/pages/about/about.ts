@@ -1,11 +1,11 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { NgFor } from '@angular/common';
+import { Component, ElementRef, ViewChild, HostListener, OnDestroy, AfterViewInit } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
 import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [NgFor, NgOptimizedImage],
+  imports: [NgFor, NgIf, NgOptimizedImage],
   template: `
   <section class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
     <section class="prose prose-invert max-w-none">
@@ -55,7 +55,6 @@ import { NgOptimizedImage } from '@angular/common';
           class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15 transition"
           aria-label="Ver CV en PDF (se abre en una pestaña nueva)"
         >
-          <!-- Icono PDF simple -->
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm1 7V3.5L19.5 9zM8.75 13H9.5a1.75 1.75 0 0 1 0 3.5H8.75V18H7.5v-5h1.25zm.75 2.5a.75.75 0 0 0 0-1.5H8.75v1.5zM12 13h1.75a1.25 1.25 0 0 1 0 2.5H13v1.5h-1.25zm1.75 1a.25.25 0 0 0 0-.5H13v.5zM17.5 13h-2v5h1.25v-1.75H17a1.25 1.25 0 0 0 0-2.5zm-.5 1a.25.25 0 1 1 0 .5h-.75V14z"/>
           </svg>
@@ -88,10 +87,14 @@ import { NgOptimizedImage } from '@angular/common';
 
       <!-- Rail -->
       <div #rail
-           class="no-scrollbar flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1"
+           class="no-scrollbar flex gap-4 overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory 
+                  overscroll-x-contain px-1 pl-10 pr-10 select-none"
+           style="scroll-padding-left:2.5rem; scroll-padding-right:2.5rem;"
            tabindex="0"
            aria-label="Galería de fotos (desliza para ver más)">
-        <figure *ngFor="let img of images" class="snap-start shrink-0">
+        <figure *ngFor="let img of images; let i = index"
+                class="snap-start shrink-0 cursor-zoom-in"
+                (click)="openImage(i)">
           <img
             [ngSrc]="img.src"
             [alt]="img.alt"
@@ -105,31 +108,146 @@ import { NgOptimizedImage } from '@angular/common';
       </div>
     </section>
   </section>
+
+  <!-- Lightbox -->
+  <div *ngIf="selectedIndex !== null"
+       class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+       (click)="closeImage()"
+       aria-label="Imagen ampliada, clic para cerrar">
+
+    <!-- Cerrar -->
+    <button type="button"
+            class="absolute top-4 right-4 h-10 w-10 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 backdrop-blur flex items-center justify-center text-xl"
+            (click)="closeImage(); $event.stopPropagation()"
+            aria-label="Cerrar">✕</button>
+
+    <!-- Flecha anterior -->
+    <button type="button"
+            class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 backdrop-blur hidden sm:flex items-center justify-center text-2xl"
+            (click)="prev($event)" aria-label="Anterior">‹</button>
+
+    <!-- Contenido ajustado al tamaño real de la foto -->
+    <div class="relative" (click)="$event.stopPropagation()">
+      <figure class="inline-block text-center">
+        <img
+          [src]="images[selectedIndex!].src"
+          [alt]="images[selectedIndex!].alt"
+          class="max-h-[80vh] max-w-[90vw] w-auto h-auto
+                 rounded-2xl border border-white/20 shadow-lg object-contain" />
+        <figcaption class="mt-3 text-neutral-300 text-sm">
+          {{ images[selectedIndex!].caption }}
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- Flecha siguiente -->
+    <button type="button"
+            class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 backdrop-blur hidden sm:flex items-center justify-center text-2xl"
+            (click)="next($event)" aria-label="Siguiente">›</button>
+  </div>
   `,
   styles: [`
-    /* Oculta barra horizontal en navegadores comunes */
     .no-scrollbar { scrollbar-width: none; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
   `]
 })
-export class AboutComponent {
+export class AboutComponent implements AfterViewInit, OnDestroy {
   @ViewChild('rail') rail!: ElementRef<HTMLDivElement>;
+  private removeWheel?: () => void;
 
   images = [
     { src: '/assets/about/ejercito1.jpg', alt: 'Ejército — instrucción', caption: 'Ejército · Instrucción' },
-    { src: '/assets/projects/ic_dekra.png', alt: 'Ejército — operaciones', caption: 'Ejército · Operaciones' },
-    { src: '/assets/projects/ic_dekra.png', alt: 'DAM — prácticas y proyectos', caption: 'DAM · Proyectos' },
-    { src: '/assets/projects/ic_dekra.png', alt: 'DAM — graduación', caption: 'DAM · Graduación' },
-    { src: '/assets/projects/ic_dekra.png', alt: 'Ejército — instrucción', caption: 'Ejército · Instrucción' },
-    { src: '/assets/projects/ic_dekra.png', alt: 'Ejército — operaciones', caption: 'Ejército · Operaciones' },
-    { src: '/assets/projects/ic_dekra.png', alt: 'DAM — prácticas y proyectos', caption: 'DAM · Proyectos' },
-    { src: '/assets/projects/ic_dekra.png', alt: 'DAM — graduación', caption: 'DAM · Graduación' },
+    { src: '/assets/about/graduacion2.jpg', alt: 'Ejército — operaciones', caption: 'Ejército · Operaciones' },
+    { src: '/assets/about/escalada2.jpg', alt: 'DAM — prácticas y proyectos', caption: 'DAM · Proyectos' },
+    { src: '/assets/about/graduacion1.jpg', alt: 'Ejército — instrucción', caption: 'Ejército · Instrucción' },
+    { src: '/assets/about/ejercito2.jpg', alt: 'Ejército — operaciones', caption: 'Ejército · Operaciones' },
+    { src: '/assets/about/escalada1.jpg', alt: 'DAM — prácticas y proyectos', caption: 'DAM · Proyectos' },
   ];
 
+  /** Botones izq/der */
   scroll(dir: 1 | -1) {
     const el = this.rail?.nativeElement;
     if (!el) return;
     const step = Math.min(400, el.clientWidth * 0.8);
     el.scrollBy({ left: dir * step, behavior: 'smooth' });
+  }
+
+  /** Rueda → scroll horizontal (robusto) */
+  ngAfterViewInit(): void {
+    const el = this.rail?.nativeElement;
+    if (!el) return;
+
+    const wheelHandler = (e: WheelEvent) => {
+      // Intercepta solo si hay overflow horizontal real
+      if (el.scrollWidth <= el.clientWidth) return;
+
+      // Delta en píxeles (normaliza deltaMode)
+      let dx = e.deltaX;
+      let dy = e.deltaY;
+      if (e.deltaMode === 1) { // líneas
+        dx *= 16;
+        dy *= 16;
+      } else if (e.deltaMode === 2) { // páginas
+        dx *= el.clientWidth;
+        dy *= el.clientWidth;
+      }
+
+      const delta = Math.abs(dx) > Math.abs(dy) ? dx : dy;
+      if (delta === 0) return;
+
+      // Evita que la página haga scroll vertical
+      e.preventDefault();
+      el.scrollLeft += delta;
+    };
+
+    // Necesitamos { passive:false } para poder preventDefault()
+    el.addEventListener('wheel', wheelHandler, { passive: false });
+    // Fallback legacy (algunos WebKit viejos emiten mousewheel)
+    // @ts-ignore
+    el.addEventListener('mousewheel', wheelHandler, { passive: false });
+
+    this.removeWheel = () => {
+      el.removeEventListener('wheel', wheelHandler);
+      // @ts-ignore
+      el.removeEventListener('mousewheel', wheelHandler);
+    };
+  }
+
+  /** Lightbox */
+  selectedIndex: number | null = null;
+
+  openImage(index: number) {
+    this.selectedIndex = index;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeImage() {
+    this.selectedIndex = null;
+    document.body.style.overflow = '';
+  }
+
+  prev(event?: Event) {
+    if (event) event.stopPropagation();
+    if (this.selectedIndex === null) return;
+    this.selectedIndex = (this.selectedIndex - 1 + this.images.length) % this.images.length;
+  }
+
+  next(event?: Event) {
+    if (event) event.stopPropagation();
+    if (this.selectedIndex === null) return;
+    this.selectedIndex = (this.selectedIndex + 1) % this.images.length;
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  onKeyDown(e: KeyboardEvent) {
+    if (this.selectedIndex === null) return;
+    if (e.key === 'Escape') this.closeImage();
+    if (e.key === 'ArrowLeft') this.prev();
+    if (e.key === 'ArrowRight') this.next();
+  }
+
+  ngOnDestroy(): void {
+    document.body.style.overflow = '';
+    if (this.removeWheel) this.removeWheel();
   }
 }

@@ -47,9 +47,9 @@ export class ProjectsComponent {
     },
     {
       title: 'App Objetivos Financieros',
-      description: 'Gráficos, Cards con metas, diálogos para ingresar cantidades y progreso.',
+      description: 'App android para la gestión financiera personal, donde puedes establecer metas y realizar un seguimiento de tus gastos.',
       tag: 'Android',
-      tech: ['Java', 'Material Design','Firebase','XML'],
+      tech: ['Java','Firebase' ,'Material Design','XML'],
       imageUrl: '/assets/projects/ic_finanpie.png',
       demoUrl: 'https://github.com/EmilioSanchez99/FinanPie/releases/latest/download/app-release.apk',
       repoUrl: 'https://github.com/EmilioSanchez99/FinanPie'
