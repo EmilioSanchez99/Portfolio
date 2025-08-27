@@ -20,7 +20,7 @@ import { NgOptimizedImage } from '@angular/common';
           <br>
           Especializado en <b>apps Android</b> y <b>aplicaciones web modernas</b> con Angular, Tailwind y Spring Boot.
           <br>
-          Mi experiencia combina <b>diseño de interfaces</b> y <b>optimización backend</b>, creando soluciones rápidas, accesibles y escalables.
+          Me gusta unir el trabajo de diseño frontend con la lógica del backend, para desarrollar aplicaciones que sean tanto <b>atractivas como eficientes.</b>
         </p>
 
         <div class="mt-6 flex gap-3">
