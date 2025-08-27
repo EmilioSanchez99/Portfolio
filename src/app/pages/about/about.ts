@@ -1,6 +1,8 @@
-import { Component, ElementRef, ViewChild, HostListener, OnDestroy, AfterViewInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
-import { NgOptimizedImage } from '@angular/common';
+import {
+  Component, ElementRef, ViewChild, HostListener, OnDestroy, AfterViewInit, inject
+} from '@angular/core';
+import { NgFor, NgIf, NgOptimizedImage, isPlatformBrowser, DOCUMENT } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-about',
@@ -26,6 +28,7 @@ import { NgOptimizedImage } from '@angular/common';
         Me apasiona combinar un <b>diseño minimalista y accesible</b> con 
         código limpio y optimizado, buscando siempre soluciones rápidas, 
         escalables y con una buena experiencia de usuario.
+        También tengo conocimientos sólidos de <b>bases de datos SQL y NoSQL</b>, tales como MySQL, PostgreSQL y MongoDB.
       </p>
       <br>
       <p>
@@ -126,7 +129,7 @@ import { NgOptimizedImage } from '@angular/common';
             class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 backdrop-blur hidden sm:flex items-center justify-center text-2xl"
             (click)="prev($event)" aria-label="Anterior">‹</button>
 
-    <!-- Contenido ajustado al tamaño real de la foto -->
+    <!-- Contenido -->
     <div class="relative" (click)="$event.stopPropagation()">
       <figure class="inline-block text-center">
         <img
@@ -153,15 +156,21 @@ import { NgOptimizedImage } from '@angular/common';
 })
 export class AboutComponent implements AfterViewInit, OnDestroy {
   @ViewChild('rail') rail!: ElementRef<HTMLDivElement>;
+
+  // --- SSR helpers ---
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
+  private documentRef = inject(DOCUMENT);
+
   private removeWheel?: () => void;
 
   images = [
-    { src: '/assets/about/ejercito1.jpg', alt: 'Ejército — instrucción', caption: 'Ejército · Instrucción' },
-    { src: '/assets/about/graduacion2.jpg', alt: 'Ejército — operaciones', caption: 'Ejército · Operaciones' },
-    { src: '/assets/about/escalada2.jpg', alt: 'DAM — prácticas y proyectos', caption: 'DAM · Proyectos' },
-    { src: '/assets/about/graduacion1.jpg', alt: 'Ejército — instrucción', caption: 'Ejército · Instrucción' },
-    { src: '/assets/about/ejercito2.jpg', alt: 'Ejército — operaciones', caption: 'Ejército · Operaciones' },
-    { src: '/assets/about/escalada1.jpg', alt: 'DAM — prácticas y proyectos', caption: 'DAM · Proyectos' },
+    { src: '/assets/about/ejercito1.jpg',   alt: 'Ejército — instrucción',             caption: 'Ejército' },
+    { src: '/assets/about/graduacion2.jpg', alt: 'Mejor Expediente Académico',         caption: 'Mejor Expediente Académico' },
+    { src: '/assets/about/escalada2.jpg',   alt: 'DAM — prácticas y proyectos',        caption: 'Escalada' },
+    { src: '/assets/about/graduacion1.jpg', alt: 'Graduación',                          caption: 'Graduación' },
+    { src: '/assets/about/ejercito2.jpg',   alt: 'Ejército — operaciones',              caption: 'Ejército' },
+    { src: '/assets/about/escalada1.jpg',   alt: 'Escalada',                            caption: 'Escalada' },
   ];
 
   /** Botones izq/der */
@@ -174,35 +183,29 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
 
   /** Rueda → scroll horizontal (robusto) */
   ngAfterViewInit(): void {
+    if (!this.isBrowser) return; // SSR guard
+
     const el = this.rail?.nativeElement;
     if (!el) return;
 
     const wheelHandler = (e: WheelEvent) => {
-      // Intercepta solo si hay overflow horizontal real
       if (el.scrollWidth <= el.clientWidth) return;
 
-      // Delta en píxeles (normaliza deltaMode)
+      // Normaliza delta según deltaMode
       let dx = e.deltaX;
       let dy = e.deltaY;
-      if (e.deltaMode === 1) { // líneas
-        dx *= 16;
-        dy *= 16;
-      } else if (e.deltaMode === 2) { // páginas
-        dx *= el.clientWidth;
-        dy *= el.clientWidth;
-      }
+      if (e.deltaMode === 1) { dx *= 16; dy *= 16; }           // líneas → px
+      else if (e.deltaMode === 2) { dx *= el.clientWidth; dy *= el.clientWidth; } // páginas → px
 
       const delta = Math.abs(dx) > Math.abs(dy) ? dx : dy;
       if (delta === 0) return;
 
-      // Evita que la página haga scroll vertical
       e.preventDefault();
       el.scrollLeft += delta;
     };
 
-    // Necesitamos { passive:false } para poder preventDefault()
     el.addEventListener('wheel', wheelHandler, { passive: false });
-    // Fallback legacy (algunos WebKit viejos emiten mousewheel)
+    // Fallback legacy (algunos WebKit antiguos)
     // @ts-ignore
     el.addEventListener('mousewheel', wheelHandler, { passive: false });
 
@@ -218,12 +221,12 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
 
   openImage(index: number) {
     this.selectedIndex = index;
-    document.body.style.overflow = 'hidden';
+    if (this.isBrowser) this.documentRef.body.style.overflow = 'hidden';
   }
 
   closeImage() {
     this.selectedIndex = null;
-    document.body.style.overflow = '';
+    if (this.isBrowser) this.documentRef.body.style.overflow = '';
   }
 
   prev(event?: Event) {
@@ -247,7 +250,7 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    document.body.style.overflow = '';
+    if (this.isBrowser) this.documentRef.body.style.overflow = '';
     if (this.removeWheel) this.removeWheel();
   }
 }

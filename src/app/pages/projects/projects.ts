@@ -10,6 +10,7 @@ type Project = {
   imageUrl?: string;
   demoUrl?: string;
   repoUrl?: string;
+  gallery?: string[];
 };
 
 @Component({
@@ -30,6 +31,7 @@ type Project = {
           [imageUrl]="p.imageUrl"
           [demoUrl]="p.demoUrl"
           [repoUrl]="p.repoUrl"
+          [gallery]="p.gallery"
         />
       </div>
     </section>
@@ -52,11 +54,19 @@ export class ProjectsComponent {
       tech: ['Java','Firebase' ,'Material Design','XML'],
       imageUrl: '/assets/projects/ic_finanpie.png',
       demoUrl: 'https://github.com/EmilioSanchez99/FinanPie/releases/latest/download/app-release.apk',
-      repoUrl: 'https://github.com/EmilioSanchez99/FinanPie'
+      repoUrl: 'https://github.com/EmilioSanchez99/FinanPie',
+      gallery: [
+        '/assets/projects/finanpie/login.png',
+        '/assets/projects/finanpie/sign in.png',
+        '/assets/projects/finanpie/home.png',
+        '/assets/projects/finanpie/goals.png',
+        '/assets/projects/finanpie/history.png',
+        '/assets/projects/finanpie/profile.png'
+      ]
     },
     {
       title: 'Rediseño completo de App Android',
-      description: 'Migración del Frontend de App antigua a un nuevo diseño, mejorando la UI/UX.',
+      description: 'Migración del Frontend completo de App antigua a un nuevo diseño estilo Material Design de Google, mejorando la UI/UX.',
       tag: 'Android UI',
       tech: ['KPIs','RecyclerView', 'CardView', 'Material Design'],
       imageUrl: '/assets/projects/ic_dekra.png'
