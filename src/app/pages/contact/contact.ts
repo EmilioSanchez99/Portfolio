@@ -82,7 +82,7 @@ import { NgIf, NgOptimizedImage } from '@angular/common';
         <img ngSrc="assets/icons/email.png" width="48" height="48" alt="Email" class="w-12 h-12 shrink-0" />
         <div>
           <div class="font-semibold text-xl">Email</div>
-          <div class="text-base text-neutral-400">emiliosanchez99@gmail.com</div>
+          <div class="text-base text-neutral-400">emiliosanvar99@gmail.com</div>
         </div>
       </a>
     </aside>
