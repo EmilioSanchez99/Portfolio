@@ -77,7 +77,7 @@ import { NgIf, NgOptimizedImage } from '@angular/common';
         </div>
       </a>
 
-      <a href="mailto:emiliosanchez99@gmail.com"
+      <a href="mailto:emiliosanvar99@gmail.com"
          class="w-full flex items-center gap-6 rounded-2xl border border-white/10 p-8 hover:border-white/30 transition bg-neutral-900/50 shadow-md">
         <img ngSrc="assets/icons/email.png" width="48" height="48" alt="Email" class="w-12 h-12 shrink-0" />
         <div>
